@@ -100,7 +100,7 @@ def Conv1D(x, nChannels, nameParam = 'conv', kernelSize = 3):
 
 def batchNorm(x,nameParam='BN', inChannels=0):
     # https://r2rt.com/implementing-batch-normalization-in-tensorflow.html
-    with tf.name_scope('BN'):
+    with tf.name_scope(nameParam):
         #inChannels = x.get_shape()[2]
         batch_mean, batch_var = tf.nn.moments(x,[0])
         #scale = tf.Variable(tf.ones([inChannels]))
@@ -111,29 +111,29 @@ def batchNorm(x,nameParam='BN', inChannels=0):
         return tf.nn.batch_normalization(x,batch_mean, batch_var,offset,scale,0.01,name=nameParam)
 
 def batchNormWithWeights(x,offset,scale,nameParam='BN'):
-    with tf.name_scope('BN'):
+    with tf.name_scope(nameParam):
         #inChannels = x.get_shape()[2]
         batch_mean, batch_var = tf.nn.moments(x,[0])
         return tf.nn.batch_normalization(x,batch_mean,batch_var,offset,scale,0.01,name=nameParam)
 
 def Conv1DWithWeights(x, w, b, nChannels, nameParam = 'conv', kernelSize = 3):
-    with tf.name_scope('Conv'):
+    with tf.name_scope(nameParam):
         # x is in format  [batch, length, channels]    
         return tf.nn.bias_add(tf.nn.conv1d(value = x,filters=w, stride=1,padding = 'VALID', name = nameParam),b)
     
 def LeakyReLU(x, nameParam='LeakyReLU'):
-    with tf.name_scope('ReLu'):
+    with tf.name_scope(nameParam):
         alpha = tf.get_variable(name=nameParam+'_w',shape=[1],dtype = tf.float32, initializer=init)
         return tf.nn.relu(x) - alpha * tf.nn.relu(-x)
 
 def LeakyReLUWithWeights(x, alpha, nameParam='LeakyReLU'):
-    with tf.name_scope('ReLu'):
+    with tf.name_scope(nameParam):
         #alpha = tf.get_variable(name=nameParam+'_w',shape=[1],dtype = tf.float32, initializer=init)
         return tf.nn.relu(x) - alpha * tf.nn.relu(-x)
 
 
 def FullyConnected(x,nodes,nameParam="fc"):
-    with tf.name_scope('FC'):
+    with tf.name_scope(nameParam):
         inNodes = x.get_shape()[1]
         w = tf.get_variable(name=nameParam+'_w',shape=[inNodes,nodes],dtype = tf.float32, initializer=init)
         b = tf.get_variable(name=nameParam+'_b',dtype = tf.float32, initializer=tf.constant(0.01, shape=[nodes], dtype=tf.float32))
@@ -141,7 +141,7 @@ def FullyConnected(x,nodes,nameParam="fc"):
         return fc
 
 def FullyConnectedWithWeights(x,w,b,nodes,nameParam="fc"):
-    with tf.name_scope('FC'):
+    with tf.name_scope(nameParam):
         fc = tf.nn.bias_add(tf.matmul(x,w),b,name = nameParam)
         return fc
 
